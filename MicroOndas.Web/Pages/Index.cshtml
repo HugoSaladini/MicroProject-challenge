@@ -1,0 +1,140 @@
+﻿@page
+@model MicroOndas.Web.Pages.IndexModel
+
+<h1>Simulador de Micro-ondas</h1>
+
+<div>
+    <label>Tempo (s):</label>
+    <input type="number" id="tempo" />
+</div>
+<div>
+    <label>Potência (opcional):</label>
+    <input type="number" id="potencia" />
+</div>
+<div id="painelNumerico">
+    <p>Ou use o teclado digital:</p>
+    <div>
+        <button class="tecla">1</button>
+        <button class="tecla">2</button>
+        <button class="tecla">3</button>
+    </div>
+    <div>
+        <button class="tecla">4</button>
+        <button class="tecla">5</button>
+        <button class="tecla">6</button>
+    </div>
+    <div>
+        <button class="tecla">7</button>
+        <button class="tecla">8</button>
+        <button class="tecla">9</button>
+    </div>
+    <div>
+        <button class="tecla">0</button>
+        <button id="limpar">Limpar</button>
+    </div>
+</div>
+<div>
+    <button id="btnIniciar">Iniciar</button>
+    <button id="btnInterromper">Interromper</button>
+</div>
+<div>
+    <p>Tempo restante: <span id="display">00:00</span></p>
+    <p>Potência usada: <span id="potenciaUsada">-</span></p>
+    <p>Processo: <span id="processoAquecimento">-</span></p>
+    <p>Status: <span id="status">Aguardando</span></p>
+</div>
+
+
+@section Scripts {
+    <script>
+        const baseUrl = 'https://localhost:7202'; // Altere para a porta que está rodando seu backend
+
+        document.getElementById('btnIniciar').addEventListener('click', async () => {
+            const tempo = parseInt(document.getElementById('tempo').value);
+            const potencia = parseInt(document.getElementById('potencia').value);
+
+            const status = document.getElementById('status');
+            const display = document.getElementById('display');
+
+                    let body = {};
+
+        if (!isNaN(tempo)) {
+            if (tempo < 1 || tempo > 120) {
+                status.textContent = 'Tempo inválido (1s a 120s)';
+                return;
+            }
+            body.tempoEmSegundos = tempo;
+        }
+
+        if (!isNaN(potencia)) {
+            body.potencia = potencia;
+        }
+
+            try {
+                        const response = await fetch(`${baseUrl}/api/aquecer`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(body)
+        });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    status.textContent = data.error || 'Erro';
+                    return;
+                }
+
+                document.getElementById('potenciaUsada').textContent = data.potenciaUtilizada || 10;
+
+                document.getElementById('processoAquecimento').textContent = data.resultado || '';
+
+
+
+                status.textContent = 'Aquecendo...';
+                let restante = isNaN(tempo) ? parseInt(data.tempoFormatado.split(':')[0]) * 60 + parseInt(data.tempoFormatado.split(':')[1]) : tempo;
+
+
+                const timer = setInterval(() => {
+                    const minutos = String(Math.floor(restante / 60)).padStart(2, '0');
+                    const segundos = String(restante % 60).padStart(2, '0');
+                    display.textContent = `${minutos}:${segundos}`;
+
+                    if (restante <= 0) {
+                        clearInterval(timer);
+                        status.textContent = 'Finalizado!';
+                    }
+
+                    restante--;
+                }, 1000);
+
+                // Botão de interrupção
+                document.getElementById('btnInterromper').onclick = () => {
+                    clearInterval(timer);
+                    status.textContent = 'Interrompido.';
+                    display.textContent = '00:00';
+                };
+
+            } catch (err) {
+                status.textContent = 'Erro na requisição.';
+                console.error(err);
+            }
+        });
+    </script>
+    <script>
+        // Clique nos botões numéricos
+        document.querySelectorAll('.tecla').forEach(botao => {
+            botao.addEventListener('click', () => {
+                const valor = botao.textContent;
+                const input = document.getElementById('tempo');
+                input.value = (input.value + valor).slice(0, 3); // limita a 3 dígitos (ex: 120)
+            });
+        });
+
+        // Botão limpar
+        document.getElementById('limpar').addEventListener('click', () => {
+            document.getElementById('tempo').value = '';
+        });
+    </script>
+}
