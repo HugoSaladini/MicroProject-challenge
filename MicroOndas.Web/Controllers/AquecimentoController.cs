@@ -1,33 +1,50 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using MicroOndas.Web.Models;
+using Microsoft.AspNetCore.Mvc;
+using MicroOndas.Domain.Models;
 using System;
 
 namespace SeuProjeto.Controllers
 {
     [ApiController]
-    [Route("api/aquecer")] // <-- Rota da API
+    [Route("api/aquecer")]
     public class AquecimentoController : ControllerBase
     {
         [HttpPost]
         public IActionResult Post([FromBody] AquecimentoRequest request)
         {
-            if (request == null || request.Tempo < 1 || request.Tempo > 120)
-                return BadRequest("Tempo inválido. Deve estar entre 1 e 120 segundos.");
+            //Console.WriteLine($"DEBUG => Tempo: {request.TempoEmSegundos}, Potência: {request.Potencia}, Pré-definido: {request.UsarProgramaPredefinido}");
 
-            int potencia = request.Potencia ?? 10;
-
-            string resultado = new string('.', potencia);
-
-            return Ok(new
+            if (request == null || (!request.UsarProgramaPredefinido &&
+                (request.TempoEmSegundos is null || request.TempoEmSegundos < 1 || request.TempoEmSegundos > 120)))
             {
-                Mensagem = $"Aquecendo por {request.Tempo} segundos com potência {potencia}.",
-                Resultado = resultado
-            });
-        }
-    }
+                return BadRequest(new { error = "Tempo inválido. Deve estar entre 1 e 120 segundos." });
+            }
 
-    public class AquecimentoRequest
-    {
-        public int Tempo { get; set; }
-        public int? Potencia { get; set; }
+            try
+            {
+                var aquecimento = new Aquecimento(
+                    request.TempoEmSegundos.Value,
+                    request.Potencia,
+                    request.UsarProgramaPredefinido
+                );
+
+                int minutos = aquecimento.TempoTotalSegundos / 60;
+                int segundos = aquecimento.TempoTotalSegundos % 60;
+                string tempoFormatado = $"{minutos:D2}:{segundos:D2}";
+
+                string resultado = new string('.', aquecimento.Potencia);
+
+                return Ok(new
+                {
+                    tempoFormatado,
+                    potenciaUtilizada = aquecimento.Potencia,
+                    resultado
+                });
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(new { error = ex.Message });
+            }
+        }
     }
 }

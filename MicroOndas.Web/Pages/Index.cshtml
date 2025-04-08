@@ -6,11 +6,27 @@
 <div>
     <label>Tempo (s):</label>
     <input type="number" id="tempo" />
-</div>
-<div>
+
     <label>Potência (opcional):</label>
     <input type="number" id="potencia" />
 </div>
+<hr />
+<div>
+    <div style="display: flex; gap: 20px; align-items: center; margin-bottom: 20px;">
+        <div>
+            <label for="display">Tempo Restante:</label>
+            <span id="display" style=" padding: 6px 14px; border-radius: 10px; border: 1px solid ;">00:00</span>
+        </div>
+        <div>
+            <label for="potenciaUsada">Potência usada:</label>
+            <span id="potenciaUsada" style=" padding: 6px 14px; border-radius: 10px; border: 1px solid ;">-</span>
+        </div>
+    </div>
+    
+    <p>Processo: <span id="processoAquecimento">-</span></p>
+    <p>Status: <span id="status">Aguardando</span></p>
+</div>
+<hr />
 <div id="painelNumerico">
     <p>Ou use o teclado digital:</p>
     <div>
@@ -32,16 +48,17 @@
         <button class="tecla">0</button>
         <button id="limpar">Limpar</button>
     </div>
+    <div>
+        <button id="btnIniciar">Iniciar</button>
+        <button id="btnInterromper">Interromper</button>
+    </div>
+
+    <hr />
+
 </div>
-<div>
-    <button id="btnIniciar">Iniciar</button>
-    <button id="btnInterromper">Interromper</button>
-</div>
-<div>
-    <p>Tempo restante: <span id="display">00:00</span></p>
-    <p>Potência usada: <span id="potenciaUsada">-</span></p>
-    <p>Processo: <span id="processoAquecimento">-</span></p>
-    <p>Status: <span id="status">Aguardando</span></p>
+<h2>Programas Rápidos</h2>
+<div id="botoesProgramas">
+    <!-- Botões serão carregados via JavaScript -->
 </div>
 
 
@@ -68,6 +85,7 @@
 
         if (!isNaN(potencia)) {
             body.potencia = potencia;
+            body.usarProgramaPredefinido = false;
         }
 
             try {
@@ -135,6 +153,92 @@
         // Botão limpar
         document.getElementById('limpar').addEventListener('click', () => {
             document.getElementById('tempo').value = '';
+            document.getElementById('potencia').value = '';
         });
+    </script>
+
+    <script>
+
+        // Carrega os programas ao abrir a página
+        async function carregarProgramas() {
+            try {
+                const res = await fetch(`${baseUrl}/api/programas`);
+                const programas = await res.json();
+
+                const container = document.getElementById('botoesProgramas');
+                programas.forEach(p => {
+                    const btn = document.createElement('button');
+                    btn.textContent = p.nome;
+                    btn.classList.add('btn-programa');
+
+                            if (p.personalizado) {
+                                btn.style.fontStyle = 'italic';
+                                btn.style.color = 'red'; // só pra testar
+                                btn.style.border = '2px dashed red'; // destaque visual
+                            }
+                    btn.addEventListener('click', () => aplicarPrograma(p));
+                    container.appendChild(btn);
+                });
+            } catch (err) {
+                console.error('Erro ao carregar programas', err);
+            }
+        }
+
+        // Aplica o programa nos campos e inicia o aquecimento
+                function aplicarPrograma(programa) {
+            const status = document.getElementById('status');
+            const display = document.getElementById('display');
+
+            const request = {
+                tempoEmSegundos: programa.tempoEmSegundos,
+                potencia: programa.potencia,
+                usarProgramaPredefinido: true
+            };
+
+            fetch(`${baseUrl}/api/aquecer`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(request)
+            })
+            .then(res => res.json().then(data => ({ ok: res.ok, data })))
+            .then(({ ok, data }) => {
+                if (!ok) {
+                    status.textContent = data.error || 'Erro';
+                    return;
+                }
+
+                document.getElementById('potenciaUsada').textContent = data.potenciaUtilizada || 10;
+                document.getElementById('processoAquecimento').textContent = data.resultado || '';
+                status.textContent = 'Aquecendo...';
+
+                let restante = parseInt(data.tempoFormatado.split(':')[0]) * 60 + parseInt(data.tempoFormatado.split(':')[1]);
+
+                const timer = setInterval(() => {
+                    const minutos = String(Math.floor(restante / 60)).padStart(2, '0');
+                    const segundos = String(restante % 60).padStart(2, '0');
+                    display.textContent = `${minutos}:${segundos}`;
+
+                    if (restante <= 0) {
+                        clearInterval(timer);
+                        status.textContent = 'Finalizado!';
+                    }
+
+                    restante--;
+                }, 1000);
+
+                document.getElementById('btnInterromper').onclick = () => {
+                    clearInterval(timer);
+                    status.textContent = 'Interrompido.';
+                    display.textContent = '00:00';
+                };
+            })
+            .catch(err => {
+                status.textContent = 'Erro na requisição.';
+                console.error(err);
+            });
+        }
+        carregarProgramas();
     </script>
 }
