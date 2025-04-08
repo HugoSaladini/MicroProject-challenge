@@ -1,61 +1,54 @@
 # Simulador de Micro-ondas
 
-Este projeto é um simulador de micro-ondas desenvolvido com **ASP.NET Core** (Razor Pages) no backend e **JavaScript** no frontend. O objetivo é simular funcionalidades reais de um micro-ondas, incluindo teclado numérico, aquecimento com potência, pausa, cancelamento, e lógica de aquecimento visual.
+![GitHub repo size](https://img.shields.io/github/repo-size/HugoSaladini/MicroProject-challenge)
+![GitHub language count](https://img.shields.io/github/languages/count/HugoSaladini/MicroProject-challenge)
+![GitHub top language](https://img.shields.io/github/languages/top/HugoSaladini/MicroProject-challenge)
 
----
+Este projeto é um simulador de micro-ondas desenvolvido com .NET Core (Razor Pages) C#. O objetivo é simular funcionalidades de um micro-ondas, de acordo com requisitos pré estabelecidos para a aplicação do Teste de Orientação a Objeto
 
-## Tecnologias Utilizadas
+## 🚀 Tecnologias Utilizadas
 
-- [.NET 8](https://dotnet.microsoft.com/en-us/download/dotnet/8.0)
-- ASP.NET Core (Razor Pages)
-- JavaScript (Vanilla)
+- .NET 8
+- C#
+- Razor Pages
 - HTML/CSS
 
----
-
-## 📦 Como rodar o projeto localmente
+## ▶️ Como Rodar o Projeto Localmente
 
 ### ✅ Pré-requisitos
 
-- [.NET SDK 8.0+](https://dotnet.microsoft.com/en-us/download)
+- [.NET SDK 8.0](https://dotnet.microsoft.com/en-us/download) ou superior  
 - Editor de código (recomendado: [Visual Studio 2022+](https://visualstudio.microsoft.com/) ou [Visual Studio Code](https://code.visualstudio.com/))
 
-### 🔧 Passos para executar
+### 🧪 Passos para Executar
 
-1. Clone o repositório:
-   ```bash
-   git clone https://github.com/seu-usuario/simulador-microondas.git
-   cd simulador-microondas
+1. Clone o repositório:  
+   `git clone https://github.com/HugoSaladini/MicroProject-challenge.git`
 
-   dotnet restore
+2. Navegue até o diretório do projeto:  
+   `cd MicroProject-challenge`
 
-   dotnet run
+3. Restaure as dependências:  
+   `dotnet restore`
 
-   https://localhost:7202
+4. Execute o projeto:  
+   `dotnet run --project MicroOndas.Web/MicroOndas.Web.csproj`
 
-   
-   MicroOndas/
-    │
-    ├── Pages/
-    │   └── Index.cshtml            # Interface do usuário
-    │   └── Index.cshtml.cs         # Código-behind da página
-    │
-    ├── Services/
-    │   └── AquecimentoService.cs   # Regras de negócio do aquecimento
-    │   └── AquecimentoState.cs     # Estado global do aquecimento (em desenvolvimento)
-    │
-    ├── Program.cs                  # Configuração de endpoints e serviços
-    ├── wwwroot/                    # Scripts e estilos estáticos
-    └── README.md                   # Documentação do projeto
+5. Acesse a aplicação no navegador:  
+   `http://localhost`
 
-   ```
-## 💡 Funcionalidades Implementadas
+## 📁 Estrutura do Projeto
 
-- ✅ **Inserção de tempo manual ou via teclado digital (botões numéricos)**
-- ✅ **Aquecimento com tempo e potência definidos**
-- ✅ **Início rápido** (30s e potência 10 ao apertar "Iniciar" sem preencher campos)
-- ✅ **Exibição do tempo restante em tempo real**
-- ✅ **Exibição visual do progresso do aquecimento** com `.` por segundo de acordo com a potência
-- ✅ **Interrupção do aquecimento**
-- ✅ **Retorno de informações via**
+- `MicroOndas.Domain/` – Camada de domínio com as entidades e lógica de negócio  
+- `MicroOndas.Tests/` – Projeto de testes automatizados  
+- `MicroOndas.Web/` – Projeto principal com Razor Pages
+## 🔧 Funcionalidades
+
+- Simulação de tempo com contador regressivo em tempo real  
+- Controle de potência ajustável para o aquecimento  
+- Programas de aquecimento pré-configurados  
+- Criação e utilização de programas personalizados  
+- Entrada de tempo via teclado físico ou na interface
+
+
 
