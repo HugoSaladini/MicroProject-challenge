@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using MicroOndas.Domain.Services; // ou o caminho real da classe
 using MicroOndas.Domain.Models;
-using MicroOndas.Domain.Interfaces; // se esse for o caminho
+using MicroOndas.Domain.Interfaces;
+using MicroOndas.Web.DTOs;// se esse for o caminho
 
 
 
@@ -30,12 +31,33 @@ namespace MicroOndas.Web.Controllers
         [HttpGet]
         public IActionResult ObterTodos()
         {
-            var preDefinidos = _preDefinidosService.ObterTodos();
-            var customizados = _customizadosService.ObterTodos();
+            var preDefinidos = _preDefinidosService
+                .ObterTodos()
+                .Select(p => new ProgramaDTO
+                {
+                    Nome = p.Nome,
+                    Alimento = p.Alimento,
+                    Potencia = p.Potencia,
+                    //Caractere = p.Caractere,
+                    TempoEmSegundos = p.TempoEmSegundos,
+                    Instrucoes = p.Instrucoes,
+                    Personalizado = false
+                });
 
-            var todos = preDefinidos.Concat(customizados.Cast<IProgramaAquecimento>()).ToList();
-            // junta os dois
+            var customizados = _customizadosService
+                .ObterTodos()
+                .Select(p => new ProgramaDTO
+                {
+                    Nome = p.Nome,
+                    Alimento = p.Alimento,
+                    Potencia = p.Potencia,
+                    Caractere = p.Caractere,
+                    TempoEmSegundos = p.TempoEmSegundos,
+                    Instrucoes = p.Instrucoes,
+                    Personalizado = true
+                });
 
+            var todos = preDefinidos.Concat(customizados).ToList();
             return Ok(todos);
         }
 
