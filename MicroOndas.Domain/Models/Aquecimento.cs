@@ -11,9 +11,9 @@ namespace MicroOndas.Domain.Models
         public int Potencia { get; private set; }
         public EstadoAquecimento Estado { get; private set; }
 
-        public Aquecimento(int tempoSegundos, int? potencia = null)
+        public Aquecimento(int tempoSegundos, int? potencia = null, bool usarProgramaPredefinido = false)
         {
-            ValidarParametros(tempoSegundos, potencia);
+            ValidarParametros(tempoSegundos, potencia, usarProgramaPredefinido);
             TempoTotalSegundos = tempoSegundos;
             TempoRestanteSegundos = tempoSegundos;
             Potencia = potencia ?? 10;
@@ -51,12 +51,14 @@ namespace MicroOndas.Domain.Models
             TempoRestanteSegundos = 0;
         }
 
-        private void ValidarParametros(int tempo, int? potencia)
+        private void ValidarParametros(int tempo, int? potencia, bool usarProgramaPredefinido)
         {
-            if (tempo < 1 || tempo > 120)
+            if (!usarProgramaPredefinido && (tempo < 1 || tempo > 120))
                 throw new ArgumentException("Tempo deve estar entre 1 e 120 segundos.");
+
             if (potencia.HasValue && (potencia < 1 || potencia > 10))
                 throw new ArgumentException("Potência deve estar entre 1 e 10.");
         }
+
     }
 }
