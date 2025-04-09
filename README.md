@@ -34,7 +34,23 @@ Este projeto é um simulador de micro-ondas desenvolvido com .NET Core (Razor Pa
 4. Execute o projeto:  
    `dotnet run --project MicroOndas.Web/MicroOndas.Web.csproj`
 
-5. Acesse a aplicação no navegador:  
+> ⚠️ **Observação:**  
+> Nesta etapa, podem ocorrer erros relacionados a versões ou dependências do projeto. Siga os passos abaixo para validar e corrigir possíveis problemas:
+
+### ✅ Passos para validação e correção
+
+1. Verifique se o arquivo `MicroOndasProject.sln` está localizado na raiz do projeto, caso esteja, execute ele.
+
+2. No projeto `MicroOndas.Web`, certifique-se de que a dependência de inicialização esteja corretamente referenciando o projeto `MicroOndas.Domain`.
+ 
+    ![image](https://github.com/user-attachments/assets/5cf20620-0fe0-4dea-b89e-5a8111c3d89b)
+
+3. Clique com o botão direito na **solução `MicroOndasProject`** e selecione:
+   - `Limpar Solução`
+   - `Recompilar Solução`
+
+
+6. Acesse a aplicação no navegador:  
    `http://localhost`
 
 ## 📁 Estrutura do Projeto
