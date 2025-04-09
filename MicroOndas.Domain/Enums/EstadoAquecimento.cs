@@ -1,5 +1,4 @@
-﻿// Enums/EstadoAquecimento.cs
-namespace MicroOndas.Domain.Enums
+﻿namespace MicroOndas.Domain.Enums
 {
     public enum EstadoAquecimento
     {

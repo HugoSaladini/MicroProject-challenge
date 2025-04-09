@@ -1,7 +1,6 @@
 ﻿using MicroOndas.Web.Models;
 using Microsoft.AspNetCore.Mvc;
 using MicroOndas.Domain.Models;
-using System;
 
 namespace SeuProjeto.Controllers
 {

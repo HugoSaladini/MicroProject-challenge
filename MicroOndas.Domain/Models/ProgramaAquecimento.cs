@@ -1,5 +1,4 @@
-﻿// Models/ProgramaAquecimento.cs
-using System;
+﻿using System;
 using MicroOndas.Domain.Interfaces;
 
 namespace MicroOndas.Domain.Models

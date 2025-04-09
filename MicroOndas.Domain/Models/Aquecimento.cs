@@ -1,5 +1,4 @@
-﻿// Models/Aquecimento.cs
-using System;
+﻿using System;
 using MicroOndas.Domain.Enums;
 
 namespace MicroOndas.Domain.Models

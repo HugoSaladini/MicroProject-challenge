@@ -1,6 +1,5 @@
 ﻿using MicroOndas.Domain.Models;
 using System;
-using MicroOndas.Web.Models;
 
 namespace MicroOndas.Web.Services
 {
