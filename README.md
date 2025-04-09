@@ -50,5 +50,8 @@ Este projeto é um simulador de micro-ondas desenvolvido com .NET Core (Razor Pa
 - Criação e utilização de programas personalizados  
 - Entrada de tempo via teclado físico ou na interface
 
+##
+
+![image](https://github.com/user-attachments/assets/4769c0eb-a6bd-4ed3-bbbd-10bfa88c4acd)
 
 
