@@ -1,9 +1,9 @@
 [
   {
-    "Nome": "Ch\u00E1",
-    "Alimento": "Ch\u00E1 de camomila",
+    "Nome": "Cha",
+    "Alimento": "Cha de camomila",
     "Potencia": 6,
-    "Caractere": "\u0000",
+    "Caractere": "c",
     "TempoEmSegundos": 45,
     "Instrucoes": null,
     "Personalizado": true

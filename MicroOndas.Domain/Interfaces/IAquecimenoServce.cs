@@ -1,5 +1,4 @@
-﻿// Interfaces/IAquecimentoService.cs
-using MicroOndas.Domain.Enums;
+﻿using MicroOndas.Domain.Enums;
 
 namespace MicroOndas.Domain.Interfaces
 {

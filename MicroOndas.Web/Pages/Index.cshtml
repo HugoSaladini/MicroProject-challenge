@@ -1,17 +1,13 @@
 ﻿@page
 @model MicroOndas.Web.Pages.IndexModel
 
-
-
-
 <h1>Simulador de Micro-ondas</h1>
-
 <div>
     <label>Tempo (s):</label>
-    <input type="number" id="tempo" />
+    <input type="number" id="tempo" min="0" max="120" />
 
     <label>Potência (opcional):</label>
-    <input type="number" id="potencia" />
+    <input type="number" id="potencia" min="1" max="10" />
 </div>
 <hr />
 <div>
@@ -55,19 +51,14 @@
         <button id="btnIniciar">Iniciar</button>
         <button id="btnInterromper">Interromper</button>
     </div>
-
-    <hr />
+<hr />
 
 </div>
 <h2>Programas Rápidos</h2>
 <div id="botoesProgramas">
-
     <!-- Botões serão carregados via JavaScript -->
-
 </div>
-
 <hr />
-
 <h3>Criar Programa Customizado</h3>
 <form id="formPrograma">
     <div>
@@ -93,10 +84,9 @@
     <button type="submit">Cadastrar programa</button>
 </form>
 
-
 @section Scripts {
     <script>
-        const baseUrl = 'https://localhost:7202'; // Altere para a porta que está rodando seu backend
+        const baseUrl = 'https://localhost:7202'; // PORTA
 
         document.getElementById('btnIniciar').addEventListener('click', async () => {
             const tempo = parseInt(document.getElementById('tempo').value);
@@ -140,11 +130,8 @@
 
                 document.getElementById('processoAquecimento').textContent = data.resultado || '';
 
-
-
                 status.textContent = 'Aquecendo...';
                 let restante = isNaN(tempo) ? parseInt(data.tempoFormatado.split(':')[0]) * 60 + parseInt(data.tempoFormatado.split(':')[1]) : tempo;
-
 
                 const timer = setInterval(() => {
                     const minutos = String(Math.floor(restante / 60)).padStart(2, '0');
@@ -173,12 +160,18 @@
         });
     </script>
     <script>
+        let campoAtivo = 'tempo';
+
+        // Define campo ativo
+        document.getElementById('tempo').addEventListener('focus', () => campoAtivo = 'tempo');
+        document.getElementById('potencia').addEventListener('focus', () => campoAtivo = 'potencia');
+
         // Clique nos botões numéricos
         document.querySelectorAll('.tecla').forEach(botao => {
             botao.addEventListener('click', () => {
                 const valor = botao.textContent;
-                const input = document.getElementById('tempo');
-                input.value = (input.value + valor).slice(0, 3); // limita a 3 dígitos (ex: 120)
+                const input = document.getElementById(campoAtivo);
+                input.value = (input.value + valor).slice(0, 3);
             });
         });
 
@@ -186,6 +179,8 @@
         document.getElementById('limpar').addEventListener('click', () => {
             document.getElementById('tempo').value = '';
             document.getElementById('potencia').value = '';
+            document.getElementById('processoAquecimento').textContent  = '-';
+            campoAtivo = 'tempo';
         });
     </script>
 
@@ -273,7 +268,7 @@
         carregarProgramas();
     </script>
 
-    <script>
+    <script> //Cadastro de Programas
         document.getElementById('formPrograma').addEventListener('submit', async (e) => {
             e.preventDefault();
 
